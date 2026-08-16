@@ -1,0 +1,76 @@
+@if (eventData()) {
+  <div class="event-detail-page">
+    <button class="back-btn" (click)="router.navigate(['/events'])">← Back to Events</button>
+
+    <div class="detail-layout">
+
+      @if (eventData().image) {
+        <div class="detail-card image-card">
+          <img [src]="eventData().image" [alt]="eventData().title" class="event-detail-img">
+        </div>
+      }
+
+      <div class="detail-card">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <span class="event-category-badge">{{ eventData().category }}</span>
+          <h1>{{ eventData().title }}</h1>
+          <div class="event-info-row">
+            <span>📍 {{ eventData().location }}</span>
+            <span>📅 {{ eventData().start_date | date:'dd.MM.yyyy' }} · {{ eventData().start_time }}</span>
+          </div>
+          <p class="event-description">{{ eventData().description }}</p>
+        </div>
+      </div>
+
+      <div class="detail-card tickets-card">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <h2>Select Tickets</h2>
+
+          @for (ticket of tickets(); track ticket.id) {
+            <div class="ticket-row">
+              <div class="ticket-info">
+                <span class="ticket-name">{{ ticket.name }}</span>
+                <span class="ticket-price">{{ ticket.price | number:'1.2-2' }} €</span>
+                @if (ticket.quantity_available === 0) {
+                  <span class="ticket-available sold-out">Sold out</span>
+                } @else {
+                  <span class="ticket-available">{{ ticket.quantity_available }} available</span>
+                }
+              </div>
+              <div class="ticket-counter">
+                <button (click)="decrease(ticket.id)" [disabled]="quantities[ticket.id] === 0">−</button>
+                <span>{{ quantities[ticket.id] }}</span>
+                <button (click)="increase(ticket.id)" [disabled]="maxErreicht(ticket)">+</button>
+              </div>
+            </div>
+          }
+
+          <div class="cart-action">
+            <button
+              class="primary-button"
+              [disabled]="totalSelected === 0"
+              (click)="addToCart()">
+              Add {{ totalSelected }} ticket(s) to cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+      @if (mapLat() && mapLng()) {
+        <div class="map-section">
+          <h3 class="map-title">Location</h3>
+          <app-map-leaflet
+            [lat]="mapLat()!"
+            [lng]="mapLng()!"
+            [locationName]="eventData().location">
+          </app-map-leaflet>
+        </div>
+      }
+  </div>
+} @else {
+  <p style="padding: 40px; text-align: center; color: #64748b;">Loading...</p>
+}

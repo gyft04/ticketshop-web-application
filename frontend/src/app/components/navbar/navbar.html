@@ -1,0 +1,26 @@
+<nav class="navbar">
+  <a class="navbar-brand" routerLink="/events">Ticketshop</a>
+
+  <div class="navbar-links">
+    <a routerLink="/events" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Events</a>
+
+    @if (authService.loggedIn()) {
+      @if (authService.isBuyer()) {
+        <a routerLink="/cart" routerLinkActive="active">
+          Cart
+          @if (cartService.totalCount() > 0) {
+            <span class="cart-badge">{{ cartService.totalCount() }}</span>
+          }
+        </a>
+        <a routerLink="/orders" routerLinkActive="active">My Orders</a>
+      }
+      @if (authService.isOrganizer()) {
+        <a routerLink="/admin" routerLinkActive="active">Dashboard</a>
+}
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+    }
+  </div>
+</nav>

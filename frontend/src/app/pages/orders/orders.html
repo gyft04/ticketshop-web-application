@@ -1,0 +1,58 @@
+<div class="orders-page">
+  <div class="orders-container">
+
+    <div class="orders-header">
+      <h1>My Orders</h1>
+      <p>Your ticket purchase history.</p>
+    </div>
+
+    @if (loading()) {
+      <p class="loading-text">Loading...</p>
+    } @else if (orders().length === 0) {
+      <div class="orders-empty">
+        <p>You have no orders yet.</p>
+        <button class="primary-button" (click)="router.navigate(['/events'])">Browse Events</button>
+      </div>
+    } @else {
+      @for (order of orders(); track order.id) {
+        <div class="order-card">
+          <div class="order-card-accent"></div>
+          <div class="order-card-body">
+
+            <div class="order-header-row">
+              <div class="order-meta">
+                <span class="order-id">Order #{{ order.id }}</span>
+                <span class="order-date">{{ order.created_at | date:'dd.MM.yyyy · HH:mm' }}</span>
+              </div>
+              <span class="order-status"
+                [class.status-paid]="order.order_status === 'paid'"
+                [class.status-pending]="order.order_status === 'pending'"
+                [class.status-cancelled]="order.order_status === 'cancelled'">
+                {{ order.order_status }}
+              </span>
+            </div>
+
+            <div class="order-items">
+              @for (item of order.items; track $index) {
+                <div class="order-item-row">
+                  <div class="order-item-info">
+                    <span class="order-item-event">{{ item.event_title }}</span>
+                    <span class="order-item-ticket">{{ item.ticket_name }} × {{ item.quantity }}</span>
+                  </div>
+                  <span class="order-item-price">{{ (item.price * item.quantity) | number:'1.2-2' }} €</span>
+                </div>
+              }
+            </div>
+
+            <div class="order-total-row">
+              <span>Total</span>
+              <span class="order-total-price">{{ order.total_price | number:'1.2-2' }} €</span>
+            </div>
+
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+</div>

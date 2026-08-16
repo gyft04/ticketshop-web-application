@@ -1,0 +1,52 @@
+<div class="confirmation-page">
+  <div class="confirmation-container">
+
+    @if (loading()) {
+      <p class="loading-text">Loading your order...</p>
+    } @else if (error()) {
+      <p class="error-text">{{ error() }}</p>
+    } @else if (order()) {
+
+      <div class="success-header">
+        <div class="checkmark">✓</div>
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for your purchase. Your tickets are booked.</p>
+      </div>
+
+      <div class="confirmation-card">
+        <div class="card-accent"></div>
+        <div class="card-body">
+
+          <div class="order-number-row">
+            <span class="order-label">Order Number</span>
+            <span class="order-number">#{{ order().id }}</span>
+          </div>
+
+          <div class="order-items">
+            @for (item of order().items; track $index) {
+              <div class="item-row">
+                <div class="item-info">
+                  <span class="item-event">{{ item.event_title }}</span>
+                  <span class="item-ticket">{{ item.ticket_name }} × {{ item.quantity }}</span>
+                </div>
+                <span class="item-price">{{ (item.price * item.quantity) | number:'1.2-2' }} €</span>
+              </div>
+            }
+          </div>
+
+          <div class="order-total">
+            <span>Total paid</span>
+            <span class="total-amount">{{ order().total_price | number:'1.2-2' }} €</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" (click)="router.navigate(['/events'])">Browse More Events</button>
+        <button class="btn-secondary" (click)="router.navigate(['/orders'])">My Orders</button>
+      </div>
+
+    }
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="events-page">
+  <h1>Upcoming Events</h1>
+  <p class="events-subtitle">Discover live shows, comedy nights and more.</p>
+
+  <div class="filter-bar">
+    <input
+      class="search-input"
+      type="text"
+      placeholder="Search events..."
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    />
+    <select
+      class="category-select"
+      [ngModel]="selectedCategory()"
+      (ngModelChange)="selectedCategory.set($event)"
+    >
+      <option value="">All categories</option>
+      @for (cat of categories(); track cat) {
+        <option [value]="cat">{{ cat }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="events-grid">
+    @for (event of filteredEvents(); track event.id) {
+      <div class="event-card">
+        <div class="event-card-img-wrap">
+          @if (event.image) {
+            <img [src]="event.image" [alt]="event.title" class="event-card-img" loading="lazy" />
+          } @else {
+            <div class="event-card-img-placeholder">
+              <span>{{ event.category }}</span>
+            </div>
+          }
+          @if (event.status === 'soldout') {
+            <span class="sold-out-badge">Sold Out</span>
+          }
+        </div>
+        <div class="event-card-accent"></div>
+        <div class="event-card-body">
+          <span class="event-category">{{ event.category }}</span>
+          <h2>{{ event.title }}</h2>
+          <div class="event-meta">
+            <span class="event-location">{{ event.location }}</span>
+            <span class="event-date">{{ event.start_date | date:'dd.MM.yyyy' }} · {{ event.start_time }}</span>
+          </div>
+          <div class="event-card-footer">
+            <a class="details-link" [routerLink]="['/events', event.id]">Details →</a>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

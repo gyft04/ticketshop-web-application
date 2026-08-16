@@ -1,0 +1,63 @@
+<div class="shop-page">
+
+  @if (loading()) {
+    <p class="loading-text">Loading shop...</p>
+  } @else if (error()) {
+    <div class="error-state">
+      <h2>{{ error() }}</h2>
+      <button class="back-btn" (click)="router.navigate(['/events'])">← Browse all events</button>
+    </div>
+  } @else {
+    <div class="shop-header">
+      <div class="shop-header-content">
+        <div class="shop-badge">Official Shop</div>
+        <h1>{{ organizerName() }}</h1>
+        <p class="shop-subtitle">{{ allEvents().length }} event{{ allEvents().length !== 1 ? 's' : '' }} available</p>
+      </div>
+    </div>
+
+    <div class="shop-body">
+      <div class="filter-bar">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search events..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+
+      @if (filteredEvents().length === 0) {
+        <div class="empty-state">
+          <p>No events available in this shop.</p>
+        </div>
+      } @else {
+        <div class="events-grid">
+          @for (event of filteredEvents(); track event.id) {
+            <div class="event-card" [routerLink]="['/events', event.id]">
+              <div class="event-card-img-wrap">
+                @if (event.image) {
+                  <img [src]="event.image" [alt]="event.title" class="event-card-img" loading="lazy" />
+                } @else {
+                  <div class="event-card-img-placeholder"><span>{{ event.category }}</span></div>
+                }
+              </div>
+              <div class="event-card-accent"></div>
+              <div class="event-card-body">
+                <span class="event-category">{{ event.category }}</span>
+                <h2>{{ event.title }}</h2>
+                <div class="event-meta">
+                  <span>📍 {{ event.location }}</span>
+                  <span>📅 {{ event.start_date | date:'dd.MM.yyyy' }} · {{ event.start_time }}</span>
+                </div>
+                <div class="event-card-footer">
+                  <span class="details-link">Details →</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

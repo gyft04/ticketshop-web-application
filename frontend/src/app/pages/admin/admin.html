@@ -1,0 +1,173 @@
+<div class="admin-page">
+
+  <div class="admin-header">
+    <div>
+      <h1>Organizer Dashboard</h1>
+      <p class="admin-subtitle">Create and manage your events.</p>
+      @if (authService.slug()) {
+        <a class="shop-link" [routerLink]="shopUrl()">
+          🌐 View your shop: /shop/{{ authService.slug() }}
+        </a>
+      }
+    </div>
+    <button class="create-btn" (click)="openCreate()">+ New Event</button>
+  </div>
+
+  @if (successMessage()) {
+    <p class="message success">{{ successMessage() }}</p>
+  }
+  @if (errorMessage()) {
+    <p class="message error">{{ errorMessage() }}</p>
+  }
+
+  <!-- Event Form (create / edit) -->
+  @if (showForm()) {
+    <div class="form-overlay" (click)="closeForm()"></div>
+    <div class="form-modal">
+      <div class="form-modal-header">
+        <h2>{{ editingId() ? 'Edit Event' : 'Create Event' }}</h2>
+        <button class="close-btn" (click)="closeForm()">✕</button>
+      </div>
+      <div class="card-accent"></div>
+
+      <form class="admin-form" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Title *</label>
+            <input type="text" [ngModel]="form().title" (ngModelChange)="updateFormField('title', $event)" name="title" required placeholder="Event title" />
+          </div>
+          <div class="form-field">
+            <label>Category</label>
+            <input type="text" [ngModel]="form().category" (ngModelChange)="updateFormField('category', $event)" name="category" placeholder="e.g. Comedy & Cabaret" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Description</label>
+          <textarea [ngModel]="form().description" (ngModelChange)="updateFormField('description', $event)" name="description" rows="3" placeholder="Event description..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Start Date *</label>
+            <input type="date" [ngModel]="form().start_date" (ngModelChange)="updateFormField('start_date', $event)" name="start_date" required />
+          </div>
+          <div class="form-field">
+            <label>Start Time *</label>
+            <input type="time" [ngModel]="form().start_time" (ngModelChange)="updateFormField('start_time', $event)" name="start_time" required />
+          </div>
+          <div class="form-field">
+            <label>End Date</label>
+            <input type="date" [ngModel]="form().end_date" (ngModelChange)="updateFormField('end_date', $event)" name="end_date" />
+          </div>
+          <div class="form-field">
+            <label>End Time</label>
+            <input type="time" [ngModel]="form().end_time" (ngModelChange)="updateFormField('end_time', $event)" name="end_time" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Location *</label>
+            <input type="text" [ngModel]="form().location" (ngModelChange)="updateFormField('location', $event)" name="location" required placeholder="Venue, City" />
+          </div>
+          <div class="form-field">
+            <label>Status</label>
+            <select [ngModel]="form().status" (ngModelChange)="updateFormField('status', $event)" name="status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-section-title">Ticket Pricing</div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Standard Price (€)</label>
+            <input type="number" min="0" step="0.50"
+              [ngModel]="form().standard_price"
+              (ngModelChange)="updateFormFieldNumber('standard_price', +$event)"
+              name="standard_price" />
+          </div>
+          <div class="form-field">
+            <label>Standard Qty</label>
+            <input type="number" min="1"
+              [ngModel]="form().standard_qty"
+              (ngModelChange)="updateFormFieldNumber('standard_qty', +$event)"
+              name="standard_qty" />
+          </div>
+          <div class="form-field">
+            <label>VIP Price (€)</label>
+            <input type="number" min="0" step="0.50"
+              [ngModel]="form().vip_price"
+              (ngModelChange)="updateFormFieldNumber('vip_price', +$event)"
+              name="vip_price" />
+          </div>
+          <div class="form-field">
+            <label>VIP Qty</label>
+            <input type="number" min="1"
+              [ngModel]="form().vip_qty"
+              (ngModelChange)="updateFormFieldNumber('vip_qty', +$event)"
+              name="vip_qty" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Event Image</label>
+          <div class="image-upload-area">
+            <label class="upload-btn" [class.uploading]="uploadingImage()">
+              @if (uploadingImage()) { Uploading... } @else { Choose Image }
+              <input type="file" accept="image/*" (change)="onImageSelected($event)" style="display:none" [disabled]="uploadingImage()" />
+            </label>
+            <span class="upload-hint">or paste URL:</span>
+            <input type="text" [ngModel]="form().image" (ngModelChange)="updateFormField('image', $event)" name="image" placeholder="https://..." class="url-input" />
+          </div>
+          @if (imagePreview()) {
+            <img [src]="imagePreview()" alt="Preview" class="image-preview" />
+          }
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="submit-btn">{{ editingId() ? 'Save Changes' : 'Create Event' }}</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Event List -->
+  @if (loading()) {
+    <p class="loading-text">Loading your events...</p>
+  } @else if (events().length === 0) {
+    <div class="empty-state">
+      <p>You haven't created any events yet.</p>
+      <button class="create-btn" (click)="openCreate()">Create your first event</button>
+    </div>
+  } @else {
+    <div class="events-grid">
+      @for (event of events(); track event.id) {
+        <div class="event-card">
+          @if (event.image) {
+            <img [src]="event.image" [alt]="event.title" class="event-card-img" />
+          }
+          <div class="event-card-body">
+            <div class="event-card-top">
+              <span class="event-category">{{ event.category }}</span>
+              <span class="status-badge" [class.status-published]="event.status === 'published'" [class.status-draft]="event.status === 'draft'">
+                {{ event.status }}
+              </span>
+            </div>
+            <h3>{{ event.title }}</h3>
+            <p class="event-meta">📍 {{ event.location }}</p>
+            <p class="event-meta">📅 {{ event.start_date | date:'dd.MM.yyyy' }} · {{ event.start_time }}</p>
+          </div>
+          <div class="event-card-actions">
+            <button class="edit-btn" (click)="openEdit(event)">Edit</button>
+            <button class="delete-btn" (click)="deleteEvent(event.id)">Delete</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

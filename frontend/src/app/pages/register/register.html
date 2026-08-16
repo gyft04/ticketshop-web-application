@@ -1,0 +1,84 @@
+<div class="auth-page">
+  <div class="auth-glow auth-glow-left"></div>
+  <div class="auth-glow auth-glow-right"></div>
+  <div class="auth-card">
+    <div class="auth-badge">Join Ticketshop</div>
+    <div class="auth-heading">
+      <div class="title-icon">
+        <span></span>
+      </div>
+      <div>
+        <h1>Create your <span class="accent-text">account</span></h1>
+        <p class="auth-subtitle">Join Ticketshop and discover shows, comedy nights and live events.</p>
+      </div>
+    </div>
+
+    <div class="auth-highlights">
+      <span>Exclusive drops</span>
+      <span>Live entertainment</span>
+      <span>Easy checkout</span>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <label for="register-name">Name</label>
+        <input id="register-name" type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" name="name" required />
+      </div>
+
+      <div class="form-field">
+        <label for="register-email">Email</label>
+        <input id="register-email" type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" required />
+      </div>
+
+      <div class="form-field">
+        <label for="register-password">Password</label>
+        <input id="register-password" type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" required />
+      </div>
+
+      <div class="form-field">
+        <label>Account Type</label>
+        <div class="role-selector">
+          <label class="role-option" [class.selected]="role() === 'user'">
+            <input type="radio" name="role" value="user"
+              [ngModel]="role()" (ngModelChange)="role.set($event)" />
+            <span class="role-icon">🎟</span>
+            <span class="role-label">Fan / Ticket Buyer</span>
+            <span class="role-desc">Buy tickets, track orders</span>
+          </label>
+          <label class="role-option" [class.selected]="role() === 'organizer'">
+            <input type="radio" name="role" value="organizer"
+              [ngModel]="role()" (ngModelChange)="role.set($event)" />
+            <span class="role-icon">🎭</span>
+            <span class="role-label">Event Organizer</span>
+            <span class="role-desc">Create and manage events</span>
+          </label>
+        </div>
+      </div>
+
+      @if (role() === 'organizer') {
+        <div class="form-field">
+          <label for="register-slug">Shop URL</label>
+          <div class="slug-input-wrap">
+            <span class="slug-prefix">ticketshop.de/shop/</span>
+            <input id="register-slug" type="text"
+              [ngModel]="slug()" (ngModelChange)="slug.set($event)"
+              name="slug" placeholder="my-theater"
+              pattern="[a-z0-9-]+" />
+          </div>
+          <span class="slug-hint">Only lowercase letters, numbers and hyphens</span>
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <p class="message error">{{ errorMessage() }}</p>
+      }
+
+      <button class="primary-button" type="submit">Create Account</button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account?
+      <a routerLink="/login">Sign in</a>
+    </p>
+  </div>
+</div>

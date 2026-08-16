@@ -1,0 +1,72 @@
+<div class="checkout-page">
+  <div class="checkout-container">
+
+    <button class="back-btn" (click)="router.navigate(['/cart'])">← Back to Cart</button>
+
+    <h1>Checkout</h1>
+    <p class="checkout-subtitle">Review your order and complete your purchase.</p>
+
+    <div class="checkout-layout">
+
+      <!-- Left: Customer Details -->
+      <div class="checkout-card">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <h2>Your Details</h2>
+
+          <div class="form-field">
+            <label>Full Name</label>
+            <input type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" placeholder="Jane Doe" />
+          </div>
+
+          <div class="form-field">
+            <label>Payment Method</label>
+            <select [ngModel]="paymentMethod()" (ngModelChange)="paymentMethod.set($event)">
+              <option value="">Select payment...</option>
+              @for (opt of paymentOptions; track opt) {
+                <option [value]="opt">{{ opt }}</option>
+              }
+            </select>
+          </div>
+
+          @if (errorMessage()) {
+            <p class="error-msg">{{ errorMessage() }}</p>
+          }
+        </div>
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div class="checkout-card">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <h2>Order Summary</h2>
+
+          <div class="summary-items">
+            @for (item of cartService.cartItems(); track item.ticket_category_id) {
+              <div class="summary-row">
+                <div class="summary-info">
+                  <span class="summary-event">{{ item.eventTitle }}</span>
+                  <span class="summary-ticket">{{ item.ticketName }} × {{ item.quantity }}</span>
+                </div>
+                <span class="summary-price">{{ (item.price * item.quantity) | number:'1.2-2' }} €</span>
+              </div>
+            }
+          </div>
+
+          <div class="summary-total">
+            <span>Total</span>
+            <span class="total-price">{{ cartService.totalPrice() | number:'1.2-2' }} €</span>
+          </div>
+
+          <button
+            class="place-order-btn"
+            [disabled]="isSubmitting()"
+            (click)="placeOrder()">
+            @if (isSubmitting()) { Processing... } @else { Place Order }
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="auth-page">
+  <div class="auth-glow auth-glow-left"></div>
+  <div class="auth-glow auth-glow-right"></div>
+  <div class="auth-card">
+    <div class="auth-badge">Ticketshop Access</div>
+    <div class="auth-heading">
+      <div class="title-icon">
+        <span></span>
+      </div>
+      <div>
+        <h1>Welcome back</h1>
+        <p class="auth-subtitle">Sign in to book your next event, manage your tickets and discover new live experiences.</p>
+      </div>
+    </div>
+
+    <div class="auth-highlights">
+      <span>Live shows</span>
+      <span>Comedy nights</span>
+      <span>Fast booking</span>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" required />
+      </div>
+
+      <div class="form-field">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" required />
+      </div>
+
+      @if (errorMessage()) {
+        <p class="message error">{{ errorMessage() }}</p>
+      }
+
+      <button class="primary-button" type="submit">Sign In</button>
+    </form>
+    <p class="auth-footer">
+      Don't have an account?
+      <a routerLink="/register">Register here</a>
+    </p>
+  </div>
+</div>

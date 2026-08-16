@@ -1,0 +1,40 @@
+<div class="cart-page">
+  <div class="cart-container">
+
+    <div class="cart-header">
+      <h1>Your Cart</h1>
+      <p>Review your tickets before placing the order.</p>
+    </div>
+
+    @if (cartService.totalCount() === 0) {
+      <div class="cart-empty">
+        <p>Your cart is empty.</p>
+        <button class="primary-button" (click)="router.navigate(['/events'])">Browse Events</button>
+      </div>
+    } @else {
+      <div class="cart-items">
+        @for (item of cartService.cartItems(); track item.ticket_category_id) {
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <span class="cart-event-title">{{ item.eventTitle }}</span>
+              <span class="cart-ticket-name">{{ item.ticketName }} × {{ item.quantity }}</span>
+            </div>
+            <div class="cart-item-right">
+              <span class="cart-item-price">{{ (item.price * item.quantity) | number:'1.2-2' }} €</span>
+              <button class="remove-btn" (click)="removeItem(item.ticket_category_id)">✕</button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="cart-summary">
+        <div class="cart-total">
+          <span>Total</span>
+          <span class="cart-total-price">{{ cartService.totalPrice() | number:'1.2-2' }} €</span>
+        </div>
+        <button class="order-btn" (click)="goToCheckout()">Proceed to Checkout →</button>
+      </div>
+    }
+
+  </div>
+</div>

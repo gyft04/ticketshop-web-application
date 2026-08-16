@@ -1,0 +1,152 @@
+<div class="stats-page">
+  <div class="stats-container">
+
+    <div class="stats-header">
+      <div class="stats-kicker">Admin Dashboard</div>
+      <h1>Statistics</h1>
+      <p>Platform-wide sales and revenue overview.</p>
+    </div>
+
+    @if (loading()) {
+      <p class="loading-text">Loading statistics...</p>
+    } @else if (error()) {
+      <p class="error-text">{{ error() }}</p>
+    } @else if (stats()) {
+
+      <!-- Overview Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Total Orders</span>
+          <span class="kpi-value">{{ stats().overview.total_orders }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Total Revenue</span>
+          <span class="kpi-value">{{ stats().overview.total_revenue | number:'1.2-2' }} €</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Tickets Sold</span>
+          <span class="kpi-value">{{ stats().overview.total_tickets_sold }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Unique Customers</span>
+          <span class="kpi-value">{{ stats().overview.unique_customers }}</span>
+        </div>
+      </div>
+
+      <!-- Revenue per Event -->
+      <div class="stats-card">
+        <div class="stats-card-accent"></div>
+        <div class="stats-card-body">
+          <h2>Revenue per Event</h2>
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Category</th>
+                <th>Tickets Sold</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of stats().revenuePerEvent; track row.event_title) {
+                <tr>
+                  <td>{{ row.event_title }}</td>
+                  <td><span class="category-badge">{{ row.category }}</span></td>
+                  <td>{{ row.tickets_sold }}</td>
+                  <td class="revenue-cell">{{ row.revenue | number:'1.2-2' }} €</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Top Ticket Categories -->
+      <div class="stats-card">
+        <div class="stats-card-accent"></div>
+        <div class="stats-card-body">
+          <h2>Top 5 Ticket Categories</h2>
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Event</th>
+                <th>Sold</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of stats().topTickets; track $index) {
+                <tr>
+                  <td>{{ row.ticket_name }}</td>
+                  <td>{{ row.event_title }}</td>
+                  <td>{{ row.quantity_sold }}</td>
+                  <td class="revenue-cell">{{ row.revenue | number:'1.2-2' }} €</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Revenue per Category -->
+      <div class="stats-card">
+        <div class="stats-card-accent"></div>
+        <div class="stats-card-body">
+          <h2>Revenue per Category</h2>
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Events</th>
+                <th>Tickets Sold</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of stats().revenuePerCategory; track row.category) {
+                <tr>
+                  <td><span class="category-badge">{{ row.category }}</span></td>
+                  <td>{{ row.event_count }}</td>
+                  <td>{{ row.tickets_sold }}</td>
+                  <td class="revenue-cell">{{ row.revenue | number:'1.2-2' }} €</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Orders last 7 days -->
+      <div class="stats-card">
+        <div class="stats-card-accent"></div>
+        <div class="stats-card-body">
+          <h2>Orders — Last 7 Days</h2>
+          @if (stats().ordersPerDay.length === 0) {
+            <p class="no-data">No orders in the last 7 days.</p>
+          } @else {
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Orders</th>
+                  <th>Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of stats().ordersPerDay; track row.order_date) {
+                  <tr>
+                    <td>{{ row.order_date | date:'dd.MM.yyyy' }}</td>
+                    <td>{{ row.order_count }}</td>
+                    <td class="revenue-cell">{{ row.daily_revenue | number:'1.2-2' }} €</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+
+    }
+  </div>
+</div>

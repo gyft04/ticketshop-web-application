@@ -1,0 +1,65 @@
+.notfound-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 32px 20px;
+}
+
+.notfound-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 48px 40px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+/* Die Ziffernfolge traegt den Markenverlauf - der einzige
+   auffaellige Akzent auf der Seite. */
+.notfound-code {
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 16px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.notfound-card h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.notfound-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+/* .primary-button ist global definiert und als <button> gedacht.
+   Hier sitzt sie auf einem <a>, das von Haus aus inline ist -
+   deshalb inline-block, sonst greifen die Innenabstaende nicht. */
+.notfound-card .primary-button {
+  display: inline-block;
+  text-decoration: none;
+}
+
+@media (max-width: 520px) {
+  .notfound-card {
+    padding: 36px 24px;
+  }
+
+  .notfound-code {
+    font-size: 3.5rem;
+  }
+}
