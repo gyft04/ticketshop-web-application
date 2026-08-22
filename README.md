@@ -1,277 +1,268 @@
-# Ticketshop
+# Ticketshop Web Application
 
-A full-stack web application for browsing events and buying tickets.
-Built as a semester project.
+A full-stack web application for discovering events, selecting tickets and placing orders online.
 
-**Deadline: 13. July 2026**
+The application was developed as a **semester team project** and implements the main workflow of a ticket platform from both the customer and organizer perspectives.
 
----
+## Features
+
+### Customer
+
+* Browse available events
+* Search and filter events
+* View detailed event information
+* Display event locations on an interactive map
+* Select different ticket categories
+* Add tickets to a shopping cart
+* Complete the checkout process
+* Create an account and log in
+* View previous orders
+
+### Organizer
+
+* Organizer authentication
+* Create new events
+* Edit and delete existing events
+* Upload event images
+* Configure Standard and VIP ticket quantities and prices
+* Manage published events
+* Access a public organizer shop page
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Angular 21 (Standalone Components, Signals) |
-| Backend | Node.js + Express |
-| Database | MySQL |
-| DB Access | mysql2 (raw SQL, no ORM) |
-| Styling | Plain CSS |
+### Frontend
 
----
+* Angular 21
+* TypeScript
+* Angular Signals
+* Angular Router
+* Reactive / template-driven forms
+* Leaflet
+* OpenStreetMap
+* HTML
+* CSS
 
-## Prerequisites
+### Backend
 
-Make sure you have these installed:
+* Node.js
+* Express.js
+* REST API
+* JWT authentication
+* bcryptjs
+* Multer
 
-- **Node.js** (v18 or higher) — https://nodejs.org
-- **Angular CLI** — `npm install -g @angular/cli`
-- **MySQL Server** (v8.0)
+### Database
 
-Check your versions:
-```
-node -v
-npm -v
-ng version
-```
+* MySQL
+* mysql2
+* Raw SQL
 
----
+## Architecture
 
-## Setup — Do This Once
+The application follows a classic three-layer architecture:
 
-### 1. Clone the repository
-```
-git clone https://github.com/LelouchLaw/ticketshop.git
-cd ticketshop
-```
-
-### 2. Database setup
-Open MySQL and run:
-```sql
-CREATE DATABASE ticketshop;
-USE ticketshop;
-SOURCE backend/database/schema.sql;
-SOURCE backend/database/seed.sql;
-```
-
-### 3. Install backend dependencies
-```
-cd backend
-npm install
+```text
+Angular Frontend
+       |
+       | HTTP / REST
+       v
+Node.js + Express Backend
+       |
+       | SQL
+       v
+     MySQL
 ```
 
-### 4. Install frontend dependencies
-```
-cd frontend
-npm install
-```
+The frontend communicates with the Express REST API.
+The backend contains the application logic, authentication, authorization and database access.
 
----
+## Authentication and Authorization
 
-## How to Run
+Users can register and log in through the application.
 
-You need **two terminals open at the same time**.
+Passwords are hashed using `bcryptjs`, while authentication is handled using JSON Web Tokens (JWT).
 
-**Terminal 1 — Backend:**
-```
-cd backend
-node src/server.js
-```
-Backend runs at: http://localhost:3000
+Protected routes use authentication middleware, and role-based authorization separates customer functionality from organizer functionality.
 
-**Terminal 2 — Frontend:**
-```
-cd frontend
-ng serve
-```
-Frontend runs at: http://localhost:4200
+## Ticket Ordering
 
----
+Customers can select tickets and add them to their cart.
+
+During checkout, the backend verifies ticket availability before creating the order. The corresponding ticket stock is then updated in the database.
+
+This prevents orders from being created with unavailable ticket quantities.
 
 ## Project Structure
 
-```
-Ticketshop/
+```text
+ticketshop-web-application/
+│
+├── frontend/
+│   └── src/
+│       └── app/
+│           ├── components/
+│           ├── guards/
+│           ├── pages/
+│           └── services/
+│
 ├── backend/
 │   ├── database/
-│   │   ├── schema.sql          # Table definitions
-│   │   └── seed.sql            # Test data
+│   │   ├── schema.sql
+│   │   └── seed.sql
+│   │
 │   └── src/
-│       ├── server.js           # Express server
-│       ├── db.js               # MySQL connection
-│       ├── routes/
-│       │   ├── events.js
-│       │   ├── auth.js
-│       │   └── orders.js
 │       ├── controllers/
-│       │   ├── eventsController.js
-│       │   ├── authController.js
-│       │   └── ordersController.js
-│       └── middleware/
-│           └── auth.js         # JWT middleware
-└── frontend/
-    └── src/app/
-        ├── pages/
-        │   ├── events/         # Event list page
-        │   ├── event-detail/   # Event detail + ticket selection
-        │   ├── login/          # Login form
-        │   ├── register/       # Register form
-        │   ├── cart/           # Cart + checkout
-        │   └── admin/          # Create event form
-        ├── components/
-        │   └── navbar/         # Navigation bar
-        └── services/
-            ├── events.ts       # API calls for events
-            ├── auth.ts         # Login, register, token
-            ├── orders.ts       # Place orders
-            └── cart.ts         # Cart state (global)
+│       ├── middleware/
+│       ├── routes/
+│       ├── db.js
+│       └── server.js
+│
+├── docs/
+├── .gitignore
+└── README.md
 ```
 
----
+## My Contribution
 
-## API Endpoints
+This application was developed collaboratively as a semester project.
 
-Base URL: `http://localhost:3000`
+My main responsibilities included:
 
-| Method | Route | Auth | Description |
-|---|---|---|---|
-| GET | /api/events | No | List all events |
-| GET | /api/events/:id | No | Single event |
-| GET | /api/events/:id/tickets | No | Ticket categories |
-| POST | /api/events | Yes | Create event |
-| POST | /api/auth/register | No | Register |
-| POST | /api/auth/login | No | Login → returns token |
-| POST | /api/orders | Yes | Place order |
-| GET | /api/orders | Yes | My orders |
+* Development of the **Login interface**
+* Development of the **Registration interface**
+* Development of the **Admin / Organizer interface**
+* Integration of the corresponding frontend forms with the application logic
+* UI styling and usability improvements
+* Participation in application testing and bug fixing
 
-**Auth header format:**
-```
-Authorization: Bearer <token>
-```
+The project also gave me practical experience working with an existing frontend/backend architecture and integrating my work into a shared Git-based development workflow.
 
----
+## Installation
 
-## Tasks — Who Does What
+### Prerequisites
 
-### Sahel — Event List Page + Cart Page
-**Files to edit:**
-- `frontend/src/app/pages/events/events.html`
-- `frontend/src/app/pages/events/events.css`
-- `frontend/src/app/pages/cart/cart.html`
-- `frontend/src/app/pages/cart/cart.css`
+Make sure the following tools are installed:
 
-**What to do:**
-1. Style the event list — make each event a nice card with title, location, date, and a "Details" button
-2. Style the cart page — show items clearly with price, quantity, total, and a "Place Order" button
-3. The logic is already implemented — you only need to add CSS and improve the HTML layout
+* Node.js
+* npm
+* Angular CLI
+* MySQL Server
 
-**Hint:** Look at `events.html` to see how events are already displayed with `@for`.
+### 1. Clone the repository
 
----
-
-### Nadim — Event Detail Page + Navbar
-**Files to edit:**
-- `frontend/src/app/pages/event-detail/event-detail.html`
-- `frontend/src/app/pages/event-detail/event-detail.css`
-- `frontend/src/app/components/navbar/navbar.html`
-- `frontend/src/app/components/navbar/navbar.css`
-
-**What to do:**
-1. Style the event detail page — show event info on the left, ticket selector on the right (like the Light project)
-2. The +/- ticket buttons are already working — just make them look good
-3. Style the navbar — make it look like a real navigation bar with proper spacing and colors
-
-**Hint:** The ticket counter buttons already work with `(click)="increase(ticket.id)"` and `(click)="decrease(ticket.id)"`.
-
----
-
-### Grace — Login + Register Pages + Admin Page
-**Files to edit:**
-- `frontend/src/app/pages/login/login.html`
-- `frontend/src/app/pages/login/login.css`
-- `frontend/src/app/pages/register/register.html`
-- `frontend/src/app/pages/register/register.css`
-- `frontend/src/app/pages/admin/admin.html`
-- `frontend/src/app/pages/admin/admin.css`
-
-**What to do:**
-1. Style the login form — centered on the page, clean and simple
-2. Style the register form — same style as login
-3. Style the admin page — a form to create a new event, all fields are already there
-
-**Hint:** The forms already work — `(ngSubmit)="onSubmit()"` is connected. You only need to style them.
-
----
-
-## Important Angular Notes for Everyone
-
-### Signals — How to read data in templates
-In this project we use Angular Signals. To show data in HTML you write `{{ value() }}` with parentheses:
-
-```html
-<!-- Correct -->
-{{ eventData().title }}
-{{ events().length }}
-
-<!-- Wrong — no parentheses -->
-{{ eventData.title }}
+```bash
+git clone https://github.com/gyft04/ticketshop-web-application.git
+cd ticketshop-web-application
 ```
 
-### How to bind CSS classes
-```html
-<button [class.active]="isActive">Click</button>
+### 2. Configure the database
+
+Create the MySQL database:
+
+```sql
+CREATE DATABASE ticketshop;
+USE ticketshop;
 ```
 
-### How to loop over a list
-```html
-@for (item of items(); track item.id) {
-  <div>{{ item.title }}</div>
-}
+Then execute:
+
+```text
+backend/database/schema.sql
+backend/database/seed.sql
 ```
 
-### How to show/hide something
-```html
-@if (errorMessage()) {
-  <p>{{ errorMessage() }}</p>
-}
+### 3. Configure the backend environment
+
+Inside the `backend` directory, copy:
+
+```text
+.env.example
 ```
 
----
+to:
 
-## Git Workflow
-
-**Rule: Nobody pushes directly to `main`.**
-
-### Steps for every task:
-
-1. Make sure you are on `main` and up to date:
-```
-git checkout main
-git pull
+```text
+.env
 ```
 
-2. Create a new branch for your task:
-```
-git checkout -b feature/your-task-name
+Then configure your own local values.
+
+Example:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=ticketshop
+JWT_SECRET=your_secret
 ```
 
-3. Work on your code. When done, commit:
-```
-git add .
-git commit -m "Short description of what you did"
-```
+The real `.env` file is excluded from Git.
 
-4. Push your branch:
-```
-git push -u origin feature/your-task-name
+### 4. Install backend dependencies
+
+```bash
+cd backend
+npm install
 ```
 
-5. Open a **Pull Request** on GitHub and tell Lawend.
+### 5. Install frontend dependencies
 
-### Branch naming:
-- `feature/event-list-styling` — new feature or styling
-- `fix/login-error-message` — bug fix
+Open another terminal:
 
-### Rules:
-- Always `git pull` before creating a new branch
-- Never commit directly to `main`
-- One branch per task
+```bash
+cd frontend
+npm install
+```
+
+## Run the Application
+
+### Backend
+
+From the `backend` directory:
+
+```bash
+node src/server.js
+```
+
+The API runs locally on:
+
+```text
+http://localhost:3000
+```
+
+### Frontend
+
+From the `frontend` directory:
+
+```bash
+npm start
+```
+
+The Angular application runs locally on:
+
+```text
+http://localhost:4200
+```
+
+## Main Concepts Practiced
+
+Through this project, I worked with and strengthened my understanding of:
+
+* Full-stack web application architecture
+* Frontend/backend communication through REST APIs
+* Angular components and services
+* Angular routing
+* Forms and user authentication
+* JWT-based authentication
+* Role-based access control
+* Relational database integration
+* SQL queries
+* Shopping cart and ordering workflows
+* Git-based collaborative development
+
+## Project Context
+
+University semester project developed collaboratively as part of practical software development coursework.
+
+The repository is presented here as part of my software development portfolio.
