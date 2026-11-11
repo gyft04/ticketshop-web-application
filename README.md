@@ -2,7 +2,9 @@
 
 A full-stack web application for discovering events, selecting tickets and placing orders online.
 
-The application was developed as a **semester team project** and implements the main workflow of a ticket platform from both the customer and organizer perspectives.
+The application was developed as a semester team project and implements the main workflow of a ticket platform from both the customer and organizer perspectives.
+
+This repository is a portfolio version of a collaborative university project. My individual contributions are documented below.
 
 ## Features
 
